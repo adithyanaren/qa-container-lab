@@ -1,0 +1,27 @@
+name: QA Container Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: SSH into EC2 and run tests
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 3.93.51.191
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd qa-container-lab || git clone https://github.com/adithyanaren/qa-container-lab.git
+            git pull
+            export DOCKER_BUILDKIT=0
+            docker-compose down
+            docker-compose up --build --abort-on-container-exit
