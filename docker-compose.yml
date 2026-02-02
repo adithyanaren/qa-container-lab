@@ -1,0 +1,17 @@
+services:
+
+  api:
+    build: ./api
+    container_name: api-service
+    ports:
+      - "8080:8080"
+
+  test-runner:
+    build: .
+    container_name: qa-test-runner
+    depends_on:
+      - api
+    environment:
+      - BASE_URL=http://api:8080
+    volumes:
+      - ./allure-results:/app/allure-results
