@@ -16,3 +16,17 @@ def test_health_response_body():
 
     data = r.json()
     assert data["status"] == "UP"
+
+def test_health_response_time():
+    import os
+    import requests
+    import time
+
+    base_url = os.getenv("BASE_URL", "http://localhost:8080")
+
+    start = time.time()
+    r = requests.get(f"{base_url}/health")
+    end = time.time()
+
+    response_time = end - start
+    assert response_time < 1
